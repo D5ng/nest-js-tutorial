@@ -1,0 +1,21 @@
+# =============================================================================
+# docker-compose.dev: 개발 모드 (dockerfile.dev 사용, devDependencies 포함)
+# =============================================================================
+# 사용법:  docker compose -f docker-compose.dev.yaml up --build
+# =============================================================================
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile.dev
+    image: first-nestjs-app-dev
+    container_name: first-nestjs-app-dev
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: development
+      PORT: "8080"
+    env_file:
+      - .env
+    restart: unless-stopped
