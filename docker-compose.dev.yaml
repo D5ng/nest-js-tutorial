@@ -1,21 +1,50 @@
 # =============================================================================
-# docker-compose.dev: 개발 모드 (dockerfile.dev 사용, devDependencies 포함)
+# docker-compose.dev: 개발 모드 (dockerfile.dev + PostgreSQL)
 # =============================================================================
 # 사용법:  docker compose -f docker-compose.dev.yaml up --build
 # =============================================================================
 
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: first-nestjs-db-dev
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_DATABASE:-first_nestjs_db}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-first_nestjs_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   app:
     build:
       context: .
       dockerfile: dockerfile.dev
     image: first-nestjs-app-dev
     container_name: first-nestjs-app-dev
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
       NODE_ENV: development
       PORT: "8080"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_DATABASE: ${DB_DATABASE:-first_nestjs_db}
     env_file:
       - .env
     restart: unless-stopped
+
+volumes:
+  pgdata_dev:
