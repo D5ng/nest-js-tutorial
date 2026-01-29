@@ -1,8 +1,8 @@
 # =============================================================================
-# NestJS 앱 — 개발용 Dockerfile (devDependencies 포함)
+# NestJS 앱 — 개발용 Dockerfile (devDependencies 포함, watch 모드용)
 # =============================================================================
-# 프로덕션용은 dockerfile, 개발용은 이 파일(dockerfile.dev).
 # docker compose -f docker-compose.dev.yaml up --build 로 사용.
+# compose 에서 소스 마운트 + pnpm run start:dev 로 실시간 반영.
 # =============================================================================
 
 FROM node:20-alpine AS builder
@@ -18,7 +18,8 @@ COPY . .
 RUN pnpm run build
 
 # -----------------------------------------------------------------------------
-# 2단계: 러너 — 개발용이므로 dependencies + devDependencies 전부 설치
+# 러너 — 개발용: devDependencies 포함 (nest start --watch 사용)
+# USER node 없음: compose volume 에 쓰기 위해 root 로 실행
 # -----------------------------------------------------------------------------
 FROM node:20-alpine AS runner
 
@@ -26,13 +27,14 @@ WORKDIR /usr/src/app
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# 개발: devDependencies 포함 (class-validator 등 런타임에 쓰는 dev 의존성 포함)
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY --from=builder /usr/src/app/dist ./dist
-
-USER node
+COPY --from=builder /usr/src/app/src ./src
+COPY --from=builder /usr/src/app/nest-cli.json ./nest-cli.json
+COPY --from=builder /usr/src/app/tsconfig.json ./tsconfig.json
+COPY --from=builder /usr/src/app/tsconfig.build.json ./tsconfig.build.json
 
 ENV NODE_ENV=development
 ENV PORT=8080
