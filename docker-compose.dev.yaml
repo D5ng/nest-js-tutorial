@@ -1,7 +1,8 @@
 # =============================================================================
-# docker-compose.dev: 개발 모드 (dockerfile.dev + PostgreSQL)
+# docker-compose.dev: 개발 모드 (dockerfile.dev + PostgreSQL) + develop.watch
 # =============================================================================
 # 사용법:  docker compose -f docker-compose.dev.yaml up --build
+# develop.watch: src/ 동기화 + package.json 변경 시 이미지 재빌드
 # =============================================================================
 
 services:
@@ -44,7 +45,19 @@ services:
       DB_DATABASE: ${DB_DATABASE:-first_nestjs_db}
     env_file:
       - .env
+    command: pnpm run start:dev
     restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /usr/src/app/src
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: pnpm-lock.yaml
 
 volumes:
   pgdata_dev:
