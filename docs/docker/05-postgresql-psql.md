@@ -50,7 +50,7 @@ psql -h localhost -p 5433 -U postgres -d first_nestjs_db
 
 ## 요약
 
-| 접속 방식 | 프로덕션 | 개발 |
-|-----------|----------|------|
+| 접속 방식       | 프로덕션                                                              | 개발                                                                      |
+| --------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | **docker exec** | `docker exec -it first-nestjs-db psql -U postgres -d first_nestjs_db` | `docker exec -it first-nestjs-db-dev psql -U postgres -d first_nestjs_db` |
-| **호스트 psql** | `psql -h localhost -p <DB_PORT> -U postgres -d first_nestjs_db` | 동일 (같은 포트 쓰면 한 번에 하나만 띄울 수 있음) |
+| **호스트 psql** | `psql -h localhost -p <DB_PORT> -U postgres -d first_nestjs_db`       | 동일 (같은 포트 쓰면 한 번에 하나만 띄울 수 있음)                         |
