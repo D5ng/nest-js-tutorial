@@ -9,6 +9,8 @@ Express로 개발하다가 NestJS의 구조를 살펴보니, Layered Architectur
 - **개발 경험**: 개발 compose 에서는 `develop.watch` 로 `src/` 수정 시 자동 동기화·재시작, `package.json` 변경 시 이미지 재빌드.
 - **문서**: Docker·compose·watch 사용법, NestJS/Express·TypeORM/Prisma 비교는 아래 섹션과 [docs/docker/](./docs/docker/) 에 정리해 두었어요.
 
+Prisma·Zod에 익숙하다가 TypeORM·class-validator로 넘어오니 어색하게 느껴지기도 했어요. NestJS와는 잘 어울리는 조합이라고 생각하지만, 2025년 자료를 보면 Prisma나 nest-zod 도입 사례가 많아서, 한 번 실험해 본 뒤 사이드 프로젝트에 적용해 보려고 해요.
+
 ---
 
 ## 왜 NestJS인가 (Express와 비교)
