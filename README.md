@@ -7,7 +7,7 @@ Express로 개발하다가 NestJS의 구조를 살펴보니, Layered Architectur
 - **기능**: Post(게시글) CRUD API, class-validator 로 DTO 검증, TypeORM Repository 패턴.
 - **운영**: 프로덕션/개발용 Dockerfile 분리, docker-compose 로 앱 + PostgreSQL 한 번에 기동.
 - **개발 경험**: 개발 compose 에서는 `develop.watch` 로 `src/` 수정 시 자동 동기화·재시작, `package.json` 변경 시 이미지 재빌드.
-- **문서**: Docker·compose·watch 사용법, NestJS/Express·TypeORM/Prisma 비교는 아래 섹션과 [docs/docker/](./docs/docker/) 에 정리해 두었어요.
+- **문서**: NestJS/Express·TypeORM/Prisma·class-validator/nest-zod 비교는 [docs/](./docs/) 와 아래 섹션에, Docker·compose·watch 사용법은 [docs/docker/](./docs/docker/) 에 정리해 두었어요.
 
 Prisma·Zod에 익숙하다가 TypeORM·class-validator로 넘어오니 어색하게 느껴지기도 했어요. NestJS와는 잘 어울리는 조합이라고 생각하지만, 2025년 자료를 보면 Prisma나 nest-zod 도입 사례가 많아서, 한 번 실험해 본 뒤 사이드 프로젝트에 적용해 보려고 해요.
 
@@ -83,6 +83,7 @@ DB 는 로컬 PostgreSQL 이나 Docker 로 따로 띄우고, `.env` 의 `DB_HOST
 
 ## 3. 문서
 
+- **NestJS·Express·TypeORM·Prisma·class-validator·nest-zod 비교**: [docs/README.md](./docs/README.md) 에서 [nestjs-express](./docs/nestjs-express.md), [typeorm-prisma](./docs/typeorm-prisma.md), [class-validator-nest-zod](./docs/class-validator-nest-zod.md) 로 이어짐.
 - **Docker / compose / develop.watch**: [docs/docker/README.md](./docs/docker/README.md) 부터 보면 됨.
 
 ---
