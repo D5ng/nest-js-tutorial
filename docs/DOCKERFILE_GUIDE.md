@@ -107,6 +107,20 @@ Dockerfile의 **한 줄 한 줄(실제로는 RUN, COPY 등)**이 각각 **하나
 - **배포·스테이징·CI** → `dockerfile` + `docker-compose.yaml`
 - **로컬에서 Docker로 띄워서 API 확인** (devDependencies 필요) → `dockerfile.dev` + `docker-compose.dev.yaml`
 
+### 5-3. PostgreSQL 서비스 (docker-compose)
+
+두 compose 파일 모두 **PostgreSQL 16 (Alpine)** 서비스 `db`를 포함해요.
+
+| 항목 | 설명 |
+|------|------|
+| **이미지** | `postgres:16-alpine` |
+| **볼륨** | 프로덕션 `pgdata`, 개발 `pgdata_dev` — 컨테이너를 지워도 DB 데이터 유지 |
+| **healthcheck** | `pg_isready`로 준비될 때까지 대기 → 앱은 `depends_on: db (condition: service_healthy)` 로 DB 준비 후 기동 |
+| **앱에서 접속** | Docker 내부에서는 호스트명 `db` 사용. compose가 앱에 `DB_HOST=db`, `DB_PORT=5432` 등 전달 |
+
+`.env` 또는 compose 기본값: `DB_USERNAME=postgres`, `DB_PASSWORD=postgres`, `DB_DATABASE=first_nestjs_db`.  
+TypeORM/Prisma 연결 시 이 환경 변수를 사용하면 됨.
+
 ---
 
 ## 6. 이 Dockerfile 한 줄 한 줄 요약 (프로덕션용 dockerfile 기준)
