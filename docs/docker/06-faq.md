@@ -19,3 +19,6 @@
 
 6. **프로덕션과 개발 Dockerfile을 왜 나눠 두나요?**  
    프로덕션 이미지는 **용량·보안**을 위해 dependencies만 넣고, 개발 이미지는 **class-validator 같은 devDependencies**까지 넣어서 로컬에서 Docker로 띄울 때 그대로 쓸 수 있게 하려고요. 빌드 인자(args) 대신 **파일을 분리**해 두면 "어떤 Dockerfile을 쓰느냐"만 보면 되어서, 설정이 단순해집니다.
+
+7. **develop.watch 는 뭐고, volume 마운트랑 뭐가 달라요?**  
+   **develop.watch**는 Docker Compose에 들어 있는 기능으로, "호스트 파일이 바뀌면 sync(컨테이너로 복사) 또는 rebuild(이미지 재빌드)"를 해 줘요. **sync**는 `./src` 만 컨테이너로 넘기므로, 전체 프로젝트를 volume으로 마운트할 필요가 없고, `node_modules` 는 이미지 것을 그대로 써서 기동 시 `pnpm install` 이 필요 없어요. **rebuild**는 `package.json` / lock 변경 시 이미지를 다시 빌드해서, 의존성 바꾼 뒤 수동으로 `docker compose build` 할 필요가 줄어듭니다. Compose **v2.22+** 에서 동작해요.

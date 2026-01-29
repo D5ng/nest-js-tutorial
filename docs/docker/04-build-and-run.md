@@ -9,6 +9,7 @@
 | **프로덕션** | `docker compose up --build` | http://localhost:8080 |
 | **개발** | `docker compose -f docker-compose.dev.yaml up --build` | http://localhost:8080 |
 
+- **개발 모드**에서는 **develop.watch** 가 켜져 있어, `src/` 수정 시 컨테이너에 동기화되고 `nest start --watch` 로 자동 재시작됨. `package.json` / `pnpm-lock.yaml` 변경 시에는 이미지가 자동 재빌드됨. (자세한 내용은 [02-project-setup.md](./02-project-setup.md) 의 "개발 모드: develop.watch" 참고.)
 - 백그라운드 실행: 위 명령에 `-d` 추가 (예: `docker compose up -d --build`).
 - 중지·삭제: `docker compose down` (개발은 `docker compose -f docker-compose.dev.yaml down`).
 
@@ -72,6 +73,19 @@ docker rmi first-nestjs-app
 | `environment` | 컨테이너 안에 넣을 환경 변수. |
 | `env_file: [.env]` | 프로젝트 루트의 `.env` 내용을 환경 변수로 주입. |
 | `restart: unless-stopped` | 컨테이너가 죽으면 자동 재시작 (재부팅 후에도 유지). |
+| `develop.watch` (개발용) | 호스트 파일 변경 시 **sync**(컨테이너로 복사) 또는 **rebuild**(이미지 재빌드). 개발 compose 에서만 사용. |
+
+### develop.watch (개발 compose 전용)
+
+`docker-compose.dev.yaml` 의 app 서비스에 설정된 항목:
+
+| action | path | 설명 |
+|--------|------|------|
+| sync | `./src` → `/usr/src/app/src` | `src/` 수정 시 컨테이너로 동기화. `nest start --watch` 가 재시작. |
+| rebuild | `package.json` | 의존성 설정 변경 시 이미지 재빌드. |
+| rebuild | `pnpm-lock.yaml` | lock 변경 시 이미지 재빌드. |
+
+Docker Compose **v2.22 이상** 필요.
 
 ### compose 공통 명령
 

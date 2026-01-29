@@ -27,6 +27,20 @@
 - **배포·스테이징·CI** → `dockerfile` + `docker-compose.yaml`
 - **로컬에서 Docker로 띄워서 API 확인** (devDependencies 필요) → `dockerfile.dev` + `docker-compose.dev.yaml`
 
+### 개발 모드: develop.watch (실시간 반영)
+
+`docker-compose.dev.yaml` 의 app 서비스에는 **develop.watch** 가 설정돼 있어요. Compose가 호스트 변경을 감지해서 컨테이너에 반영합니다.
+
+| action | path | 동작 |
+|--------|------|------|
+| **sync** | `./src` | 호스트의 `src/` 를 컨테이너 `/usr/src/app/src` 로 동기화. 코드 수정 시 `nest start --watch` 가 변경을 감지해 자동 재시작. |
+| **rebuild** | `package.json` | `package.json` 이 바뀌면 이미지를 다시 빌드. |
+| **rebuild** | `pnpm-lock.yaml` | lock 파일이 바뀌면 이미지를 다시 빌드. |
+
+- **sync**: 전체 프로젝트를 마운트하지 않고 `src` 만 동기화하므로, `node_modules` 는 이미지 것을 그대로 씀. 기동 시 `pnpm install` 이 필요 없음.
+- **rebuild**: 의존성 추가/변경 후 저장하면 Compose가 이미지를 재빌드하고 앱 컨테이너를 다시 띄움.
+- **요구 사항**: Docker Compose **v2.22+** (watch 기능 지원).
+
 ---
 
 ## PostgreSQL 서비스 (docker-compose)
