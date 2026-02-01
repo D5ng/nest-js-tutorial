@@ -48,6 +48,10 @@ export class PostService {
   }
 
   async remove(id: number): Promise<void> {
-    await this.postRepository.delete(id)
+    const result = await this.postRepository.delete(id)
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`${id}에 해당하는 게시글을 찾을 수 없습니다.`)
+    }
   }
 }
