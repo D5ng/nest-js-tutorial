@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { QueryFailedError, Repository } from 'typeorm'
 import { CreatePostDto } from './dto/create-post.dto'
 import { UpdatePostDto } from './dto/update-post.dto'
 import { Post } from './post.entity'
@@ -20,8 +20,19 @@ export class PostService {
   }
 
   async create(createPostDto: CreatePostDto): Promise<Post> {
-    const post = this.postRepository.create(createPostDto)
-    return this.postRepository.save(post)
+    try {
+      const post = this.postRepository.create(createPostDto)
+      const savedPost = await this.postRepository.save(post)
+      return savedPost
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        if ((error.driverError as { code?: string }).code === '23505') {
+          throw new ConflictException('해당 제목과 작성자 ID로 이미 게시글이 존재합니다.')
+        }
+      }
+
+      throw error
+    }
   }
 
   async update(id: number, updatePostDto: UpdatePostDto): Promise<Post | null> {
