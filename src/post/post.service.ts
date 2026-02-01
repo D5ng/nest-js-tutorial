@@ -1,5 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { DatabaseError } from 'pg'
 import { QueryFailedError, Repository } from 'typeorm'
 import { CreatePostDto } from './dto/create-post.dto'
 import { UpdatePostDto } from './dto/update-post.dto'
@@ -25,8 +26,8 @@ export class PostService {
       const savedPost = await this.postRepository.save(post)
       return savedPost
     } catch (error) {
-      if (error instanceof QueryFailedError) {
-        if ((error.driverError as { code?: string }).code === '23505') {
+      if (error instanceof QueryFailedError && error.driverError instanceof DatabaseError) {
+        if (error.driverError.code === '23505') {
           throw new ConflictException('해당 제목과 작성자 ID로 이미 게시글이 존재합니다.')
         }
       }
