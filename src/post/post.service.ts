@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common'
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { DatabaseError } from 'pg'
 import { QueryFailedError, Repository } from 'typeorm'
@@ -37,8 +37,14 @@ export class PostService {
   }
 
   async update(id: number, updatePostDto: UpdatePostDto): Promise<Post | null> {
-    await this.postRepository.update(id, updatePostDto)
-    return this.postRepository.findOne({ where: { id } })
+    const updatedPost = await this.postRepository.update(id, updatePostDto)
+
+    if (updatedPost.affected === 0) {
+      throw new NotFoundException(`${id}에 해당하는 게시글을 찾을 수 없습니다.`)
+    }
+
+    const post = await this.postRepository.findOne({ where: { id } })
+    return post
   }
 
   async remove(id: number): Promise<void> {
