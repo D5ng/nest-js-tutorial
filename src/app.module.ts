@@ -1,20 +1,28 @@
 import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { DataSourceOptions } from 'typeorm'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+import typeorm from './config/typeorm'
 import { PostModule } from './post/post.module'
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5432', 10),
-      username: process.env.DB_USERNAME || 'test',
-      password: process.env.DB_PASSWORD || 'test',
-      database: process.env.DB_DATABASE || 'inflearn',
-      autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV === 'development' ? true : false,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [typeorm],
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        const options = configService.get<DataSourceOptions>('typeorm')
+        if (!options) {
+          throw new Error('TypeORM configuration not found')
+        }
+
+        return options
+      },
     }),
     PostModule,
   ],
