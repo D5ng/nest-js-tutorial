@@ -15,6 +15,7 @@
     "*.service.ts": "typescript",
     "*.controller.ts": "typescript",
     "*.repository.ts": "typescript",
-    "*.module.ts": "typescript"
+    "*.module.ts": "typescript",
+    "*.guard.ts": "typescript"
   }
 }
