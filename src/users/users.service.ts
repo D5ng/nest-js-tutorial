@@ -31,14 +31,9 @@ export class UsersService {
     return user
   }
 
-  async findUsername(username: string): Promise<User> {
+  async findUsername(username: string): Promise<User | null> {
     const user = await this.userRepository.findOne({ where: { username } })
-
-    if (!user) {
-      throw new NotFoundException(`${username}에 해당하는 사용자를 찾을 수 없습니다.`)
-    }
-
-    return user
+    return user ?? null
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
