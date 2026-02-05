@@ -20,8 +20,12 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "docker:dev:watch": "docker compose -f docker-compose.dev.yaml up --watch",
     "docker:dev:up": "docker compose -f docker-compose.dev.yaml up -d --build",
-    "docker:dev:down": "docker compose -f docker-compose.dev.yaml down",
-    "docker:dev:logs": "docker compose -f docker-compose.dev.yaml logs -f"
+    "docker:dev:down": "docker compose -f docker-compose.dev.yaml down -v",
+    "docker:dev:logs": "docker compose -f docker-compose.dev.yaml logs -f",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "docker:migration:generate": "docker exec -it first-nestjs-app-dev pnpm typeorm migration:generate -d src/config/typeorm.ts",
+    "docker:migration:show": "docker exec -it first-nestjs-app-dev pnpm typeorm migration:show -d src/config/typeorm.ts",
+    "docker:migration:run": "docker exec -it first-nestjs-app-dev pnpm typeorm migration:run -d src/config/typeorm.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
