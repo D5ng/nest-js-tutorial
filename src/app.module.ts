@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { DataSourceOptions } from 'typeorm'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+import { AuthModule } from './auth/auth.module'
 import typeorm from './config/typeorm'
 import { PostModule } from './post/post.module'
 
@@ -12,6 +13,7 @@ import { PostModule } from './post/post.module'
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeorm],
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -25,6 +27,7 @@ import { PostModule } from './post/post.module'
       },
     }),
     PostModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
