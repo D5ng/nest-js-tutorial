@@ -1,4 +1,5 @@
 import { registerAs } from '@nestjs/config'
+import path from 'path'
 import { DataSource, DataSourceOptions } from 'typeorm'
 
 const config = {
@@ -8,8 +9,8 @@ const config = {
   username: `${process.env.DB_USERNAME || 'test'}`,
   password: `${process.env.DB_PASSWORD || 'test'}`,
   database: `${process.env.DB_DATABASE || 'inflearn'}`,
-  entities: ['dist/**/**/*.entity{.ts,.js}'],
-  migrations: ['dist/migrations/*{.ts,.js}'],
+  entities: [path.join(__dirname, '/../../dist/**/*.entity{.ts,.js}')],
+  migrations: [path.join(__dirname, '/../../src/migrations/**/*{.ts,.js}')],
   autoLoadEntities: true,
   synchronize: false,
 }
